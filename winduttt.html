@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Surprise For You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  :root {
+    --maroon: #800000;
+    --dark-red: #4a0000;
+    --cream: #FFFDD0;
+    --glass: rgba(255, 253, 208, 0.1);
+    --glass-border: rgba(255, 253, 208, 0.25);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--cream);
+    background: linear-gradient(160deg, var(--maroon) 0%, var(--dark-red) 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream);
+  }
+
+  .page {
+    display: none;
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .page.active {
+    display: flex;
+    animation: fadeIn 0.8s ease forwards;
+  }
+
+  #envelope-section.active,
+  #surprise-section.active,
+  #main-menu.active {
+    min-height: calc(100vh - 72px);
+    justify-content: center;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .page h1 {
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .subtitle {
+    font-weight: 300;
+    font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+    opacity: 0.85;
+    margin-bottom: 36px;
+  }
+
+  .back-btn {
+    align-self: flex-start;
+    background: transparent;
+    color: var(--cream);
+    border: 1.5px solid var(--cream);
+    border-radius: 999px;
+    padding: 8px 22px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-bottom: 28px;
+    transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .back-btn:hover {
+    background: var(--cream);
+    color: var(--maroon);
+    transform: scale(1.06);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  }
+
+  .music-btn {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 1.5px solid var(--cream);
+    background: rgba(74, 0, 0, 0.75);
+    color: var(--cream);
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+  }
+
+  .music-btn.show {
+    display: flex;
+  }
+
+  .music-btn:hover {
+    transform: scale(1.1);
+    background: var(--cream);
+    color: var(--maroon);
+  }
+
+  .music-btn.playing span {
+    display: inline-block;
+    animation: spin 4s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .credit {
+    position: fixed;
+    left: 14px;
+    bottom: 10px;
+    font-size: 0.62rem;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 90;
+  }
+
+  .script-title {
+    font-family: 'Great Vibes', cursive;
+    font-weight: 400;
+    font-size: clamp(2.6rem, 11vw, 4.4rem);
+    color: var(--cream);
+    margin-bottom: 36px;
+    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  }
+
+  .envelope-stage {
+    perspective: 900px;
+  }
+
+  .envelope {
+    position: relative;
+    width: min(78vw, 320px);
+    aspect-ratio: 3 / 2;
+    background: #f6efd3;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.5);
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    animation: envFloat 3s ease-in-out infinite;
+  }
+
+  .envelope:hover {
+    transform: scale(1.05);
+    box-shadow: 0 22px 46px rgba(0, 0, 0, 0.6);
+  }
+
+  @keyframes envFloat {
+    0%, 100% { translate: 0 0; }
+    50%      { translate: 0 -8px; }
+  }
+
+  .envelope::before,
+  .envelope::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+  }
+
+  .envelope::before {
+    background: #ebe2bf;
+    clip-path: polygon(0 0, 52% 56%, 0 100%);
+  }
+
+  .envelope::after {
+    background: #e4dab4;
+    clip-path: polygon(100% 0, 48% 56%, 100% 100%);
+  }
+
+  .env-bottom {
+    position: absolute;
+    inset: 0;
+    background: #f1e8c8;
+    clip-path: polygon(0 100%, 50% 45%, 100% 100%);
+    border-radius: 6px;
+    z-index: 1;
+  }
+
+  .env-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    background: #f9f3da;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 0.9s ease;
+    z-index: 3;
+  }
+
+  .env-seal {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    width: 17%;
+    aspect-ratio: 1;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #c43b3b, var(--maroon) 55%, var(--dark-red));
+    border: 3px solid #d4af37;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 4;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+
+  .envelope.open {
+    animation: none;
+  }
+
+  .envelope.open .env-flap {
+    transform: rotateX(180deg);
+    z-index: 0;
+  }
+
+  .envelope.open .env-seal {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.3);
+  }
+
+  .tap-hint {
+    margin-top: 34px;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.4rem, 5vw, 1.9rem);
+    opacity: 0.9;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.55; }
+    50%      { opacity: 1; }
+  }
+
+  .collage {
+    position: relative;
+    width: min(94vw, 560px);
+    aspect-ratio: 1 / 0.85;
+    margin: 0 auto 10px;
+  }
+
+  .collage > * {
+    position: absolute;
+  }
+
+  .heart-wrap {
+    left: 2%;
+    top: 18%;
+    width: 27%;
+    filter: drop-shadow(0 0 14px rgba(255, 190, 215, 0.85));
+    transition: transform 0.4s ease;
+  }
+
+  .heart-wrap:hover {
+    transform: scale(1.08) rotate(-4deg);
+  }
+
+  .heart-wrap img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    clip-path: url(#heartClip);
+  }
+
+  .collage .pol-small {
+    left: 4%;
+    top: 53%;
+    width: 27%;
+    padding: 4% 4% 12%;
+    transform: rotate(-9deg);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+  }
+
+  .collage .pol-small:hover {
+    transform: rotate(0deg) scale(1.08);
+  }
+
+  .card-wrap {
+    left: 27%;
+    top: 12%;
+    width: 46%;
+    aspect-ratio: 1 / 1.05;
+  }
+
+  .card-env {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 66%;
+    background: #cfc7ab;
+    clip-path: polygon(0 14%, 50% 0, 100% 14%, 100% 100%, 0 100%);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-paper {
+    position: absolute;
+    left: 7%;
+    top: 4%;
+    width: 86%;
+    height: 66%;
+    background: #fbf7e6;
+    clip-path: polygon(0 4%, 6% 0, 14% 3%, 24% 0, 36% 3%, 50% 0, 64% 3%, 78% 0, 90% 3%, 100% 1%, 100% 97%, 0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(-3deg);
+    z-index: 2;
+  }
+
+  .card-paper span {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(1.3rem, 6.2vw, 2.3rem);
+    line-height: 1.1;
+    color: var(--maroon);
+    text-align: center;
+  }
+
+  .strip {
+    right: 3%;
+    top: 6%;
+    width: 23%;
+    padding: 5% 5% 3%;
+    background: var(--cream);
+    display: flex;
+    flex-direction: column;
+    gap: 4%;
+    transform: rotate(8deg);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45);
+    transition: transform 0.4s ease;
+  }
+
+  .strip:hover {
+    transform: rotate(0deg) scale(1.06);
+  }
+
+  .strip img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
+
+  .deco {
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+    animation: bob 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 5;
+  }
+
+  .deco.d1 { left: 58%; top: -2%;  width: 14%; }
+  .deco.d2 { left: 21%; top: 35%;  width: 12%; animation-delay: .5s; }
+  .deco.d3 { left: 28%; top: 62%;  width: 16%; animation-delay: 1s; }
+  .deco.d4 { right: 1%; top: 63%;  width: 15%; animation-delay: 1.5s; }
+  .deco.d5 { left: 61%; top: 50%;  width: 13%; animation-delay: 2s; }
+  .deco.d6 { left: 1%;  top: 0%;   width: 9%;  animation-delay: 2.5s; }
+
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-7px); }
+  }
+
+  .tap-surprise {
+    margin-top: 22px;
+    background: transparent;
+    border: none;
+    color: var(--cream);
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(0.95rem, 3vw, 1.1rem);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 6px;
+    cursor: pointer;
+    animation: pulse 2s ease-in-out infinite;
+    transition: transform 0.3s ease;
+  }
+
+  .tap-surprise:hover {
+    transform: scale(1.08);
+  }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .menu-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    padding: 28px 12px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    transition: transform 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .menu-card img {
+    width: 68px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.35s ease;
+  }
+
+  .menu-card h3 {
+    font-size: 1.25rem;
+    transition: color 0.35s ease;
+  }
+
+  .menu-card:hover {
+    background: var(--cream);
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
+  }
+
+  .menu-card:hover h3 {
+    color: var(--maroon);
+  }
+
+  .menu-card:hover img {
+    transform: scale(1.1);
+  }
+
+  .polaroid {
+    background: var(--cream);
+    padding: 12px 12px 48px;
+    border-radius: 6px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.45);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+    width: 100%;
+  }
+
+  .polaroid img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .polaroid .caption {
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--maroon);
+  }
+
+  .gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 34px 28px;
+    width: 100%;
+    padding: 10px 0 20px;
+  }
+
+  .gallery .polaroid {
+    width: clamp(150px, 28vw, 230px);
+  }
+
+  .gallery .polaroid:nth-child(1) { transform: rotate(-6deg); }
+  .gallery .polaroid:nth-child(2) { transform: rotate(4deg) translateY(10px); }
+  .gallery .polaroid:nth-child(3) { transform: rotate(-3deg) translateY(-6px); }
+  .gallery .polaroid:nth-child(4) { transform: rotate(7deg); }
+  .gallery .polaroid:nth-child(5) { transform: rotate(-5deg) translateY(8px); }
+  .gallery .polaroid:nth-child(6) { transform: rotate(3deg) translateY(-4px); }
+
+  .gallery .polaroid:hover {
+    transform: rotate(0deg) scale(1.08);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.55);
+    z-index: 5;
+  }
+
+  .moment-layout {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    width: 100%;
+  }
+
+  .letter {
+    flex: 1.4;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.55), transparent 45%),
+      radial-gradient(circle at 80% 85%, rgba(128, 0, 0, 0.07), transparent 50%),
+      #fffbe0;
+    color: var(--dark-red);
+    border-radius: 10px;
+    padding: 36px 32px;
+    text-align: left;
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45);
+    transform: rotate(-1.5deg);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    position: relative;
+  }
+
+  .letter:hover {
+    transform: rotate(0deg) scale(1.02);
+    box-shadow: 0 20px 42px rgba(0, 0, 0, 0.55);
+  }
+
+  .letter h3 {
+    color: var(--maroon);
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .letter p {
+    font-weight: 400;
+    font-size: clamp(0.92rem, 2.4vw, 1.02rem);
+    line-height: 1.95;
+  }
+
+  .letter .sign {
+    margin-top: 20px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--maroon);
+    text-align: right;
+  }
+
+  .moment-photo {
+    flex: 1;
+    max-width: 280px;
+    transform: rotate(4deg);
+  }
+
+  .moment-photo:hover {
+    transform: rotate(0deg) scale(1.06);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.55);
+  }
+
+  .scrapbook {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 36px 16px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .video-frame {
+    width: 100%;
+    max-width: 560px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+    z-index: 2;
+  }
+
+  .scrap-photo {
+    position: absolute;
+    width: clamp(90px, 20vw, 150px);
+    z-index: 3;
+  }
+
+  .scrap-photo.one {
+    top: -6px;
+    left: 0;
+    transform: rotate(-9deg);
+  }
+
+  .scrap-photo.two {
+    bottom: -6px;
+    right: 0;
+    transform: rotate(8deg);
+  }
+
+  .scrap-photo:hover {
+    transform: rotate(0deg) scale(1.1);
+    box-shadow: 0 18px 36px rgba(0, 0, 0, 0.55);
+  }
+
+  .scrap-photo.polaroid {
+    padding: 7px 7px 28px;
+  }
+
+  .scrap-photo .caption {
+    font-size: 0.7rem;
+    bottom: 6px;
+  }
+
+  .song-title {
+    margin-top: 22px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    opacity: 0.9;
+  }
+
+  .tray {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-end;
+    gap: clamp(10px, 4vw, 30px);
+    min-height: 110px;
+    margin-bottom: 10px;
+  }
+
+  .flower-slot {
+    animation: bob 3s ease-in-out infinite;
+  }
+
+  .flower-slot:nth-child(2) { animation-delay: .5s; }
+  .flower-slot:nth-child(3) { animation-delay: 1s; }
+  .flower-slot:nth-child(4) { animation-delay: 1.5s; }
+
+  .drag-flower {
+    display: block;
+    width: clamp(54px, 16vw, 84px);
+    height: auto;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.4));
+    transition: transform 0.35s ease, opacity 0.3s ease;
+  }
+
+  .drag-flower:hover {
+    transform: scale(1.15) rotate(5deg);
+  }
+
+  .drag-flower.dragging {
+    transition: none;
+    cursor: grabbing;
+    position: relative;
+    z-index: 50;
+  }
+
+  .drag-flower.placed {
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.2);
+  }
+
+  .bouquet-stage {
+    position: relative;
+    width: min(86vw, 320px);
+    aspect-ratio: 1 / 1.25;
+    margin: 0 auto 18px;
+    border-radius: 28px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+    touch-action: none;
+    --mouth: 40%;
+  }
+
+  .bouquet-stage.hover {
+    background: rgba(255, 253, 208, 0.08);
+    box-shadow: 0 0 34px rgba(255, 190, 215, 0.35);
+  }
+
+  .bucket-img {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 46%;
+    height: auto;
+    transform: translateX(-50%);
+    z-index: 2;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.4));
+  }
+
+  .placed-flower {
+    position: absolute;
+    bottom: calc(var(--mouth, 40%) + var(--dy, 0%));
+    left: calc(50% + var(--dx));
+    height: auto;
+    transform-origin: 50% 100%;
+    transform: translateX(-50%) rotate(var(--rot));
+    z-index: 1;
+    pointer-events: none;
+    -webkit-user-drag: none;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.35));
+    animation: growFlower 0.8s cubic-bezier(.3, 1.4, .5, 1) both;
+  }
+
+  @keyframes growFlower {
+    from { transform: translateX(-50%) rotate(var(--rot)) scale(0); }
+    to   { transform: translateX(-50%) rotate(var(--rot)) scale(1); }
+  }
+
+  .message-box {
+    width: 100%;
+    max-width: 640px;
+    min-height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px 28px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 22px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-weight: 500;
+    line-height: 1.7;
+    white-space: pre-line;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .message-box:hover {
+    transform: scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+  }
+
+  .message-box.flash {
+    animation: msgFlash 0.6s ease;
+  }
+
+  @keyframes msgFlash {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 720px) {
+    .moment-layout {
+      flex-direction: column;
+      gap: 34px;
+    }
+
+    .moment-photo {
+      max-width: 240px;
+    }
+
+    .letter {
+      padding: 28px 22px;
+    }
+
+    .gallery {
+      gap: 28px 16px;
+    }
+
+    .scrap-photo.one { top: -14px; }
+    .scrap-photo.two { bottom: -14px; }
+  }
+</style>
+</head>
+<body>
+
+  <audio id="bg-music" src="Panasea.mp3" loop preload="auto"></audio>
+
+  <button class="music-btn" id="music-btn" onclick="toggleMusic()" aria-label="Putar atau jeda musik"><span>♪</span></button>
+
+  <div class="credit">Icons by Flaticon</div>
+
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+        <path d="M0.5,0.95 C0.08,0.62 -0.02,0.36 0.1,0.18 C0.22,0.01 0.43,0.05 0.5,0.24 C0.57,0.05 0.78,0.01 0.9,0.18 C1.02,0.36 0.92,0.62 0.5,0.95 Z"/>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <div id="envelope-section" class="page active">
+    <h1 class="script-title">Press the Envelope</h1>
+
+    <div class="envelope-stage">
+      <div class="envelope" id="envelope" onclick="openEnvelope()">
+        <div class="env-bottom"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal"></div>
+      </div>
+    </div>
+
+    <p class="tap-hint">Tap to Next</p>
+  </div>
+
+  <div id="surprise-section" class="page">
+    <div class="collage" onclick="showSection('main-menu')" style="cursor:pointer;">
+
+      <div class="heart-wrap">
+        <img src="picw3.jpeg" alt="Foto hati">
+      </div>
+
+      <div class="polaroid pol-small">
+        <img src="picw1.jpeg" alt="Foto polaroid">
+      </div>
+
+      <div class="card-wrap">
+        <div class="card-env"></div>
+        <div class="card-paper">
+          <span>Happy<br>Birthday</span>
+        </div>
+      </div>
+
+      <div class="strip">
+        <img src="picw2.jpeg" alt="Strip 1">
+        <img src="picstrip2.jpeg" alt="Strip 2">
+        <img src="picstrip3.jpeg" alt="Strip 3">
+      </div>
+
+      <img class="deco d1" src="deco-rose.png" alt="" onerror="this.style.display='none'">
+      <img class="deco d2" src="deco-flower.png" alt="" onerror="this.style.display='none'">
+      <img class="deco d3" src="deco-butterfly.png" alt="" onerror="this.style.display='none'">
+      <img class="deco d4" src="deco-plumeria.png" alt="" onerror="this.style.display='none'">
+      <img class="deco d5" src="deco-lily.png" alt="" onerror="this.style.display='none'">
+      <img class="deco d6" src="deco-sparkle.png" alt="" onerror="this.style.display='none'">
+    </div>
+
+    <button class="tap-surprise" onclick="showSection('main-menu')">Tap for surprise</button>
+  </div>
+
+  <div id="main-menu" class="page">
+    <h1>Choose the Surprise</h1>
+    <p class="subtitle">Pick an option to reveal your gift</p>
+
+    <div class="menu-grid">
+      <div class="menu-card" onclick="showSection('journey-section')">
+        <img src="memories.png" alt="Journey">
+        <h3>Journey</h3>
+      </div>
+
+      <div class="menu-card" onclick="showSection('moment-section')">
+        <img src="action-cam.png" alt="Moment">
+        <h3>Moment</h3>
+      </div>
+
+      <div class="menu-card" onclick="showSection('playlist-section')">
+        <img src="vinyl.png" alt="Playlist">
+        <h3>Playlist</h3>
+      </div>
+
+      <div class="menu-card" onclick="showSection('bouquet-section')">
+        <img src="gift.png" alt="Gift">
+        <h3>Gift</h3>
+      </div>
+    </div>
+  </div>
+
+  <div id="journey-section" class="page">
+    <button class="back-btn" onclick="backToMenu()">&larr; Back</button>
+
+    <h1>Our Journey</h1>
+    <p class="subtitle">Every picture holds a little piece of us</p>
+
+    <div class="gallery">
+      <div class="polaroid">
+        <img src="first convo.jpeg" alt="Kenangan 1">
+        <span class="caption">Our First Conversation</span>
+      </div>
+
+      <div class="polaroid">
+        <img src="First meal.jpeg" alt="Kenangan 2">
+        <span class="caption">Pertama Kali Kamu Bawain Aku Bekal</span>
+      </div>
+
+      <div class="polaroid">
+        <img src="First Mirror.jpeg" alt="Kenangan 3">
+        <span class="caption">Pertama kali kita mirror WKWK CANGGUNG COK</span>
+      </div>
+
+      <div class="polaroid">
+        <img src="first webcam.jpeg" alt="Kenangan 4">
+        <span class="caption">Pertama kali kita berani Webcam HEHE</span>
+      </div>
+
+      <div class="polaroid">
+        <img src="first pap.jpeg" alt="Kenangan 5">
+        <span class="caption">Highlights mu yang aku SS buat nunjukin ke temenku (maaf ye)</span>
+      </div>
+
+      <div class="polaroid">
+        <img src="Now.jpeg" alt="Kenangan 6">
+        <span class="caption">Dan ini kita yang sekarang (plenger bat jir)</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="moment-section" class="page">
+    <button class="back-btn" onclick="backToMenu()">&larr; Back</button>
+
+    <h1>For Ur Special Moment</h1>
+    <p class="subtitle">A few words from my heart to yours</p>
+
+    <div class="moment-layout">
+      <div class="letter">
+        <h3>For Winda Reisya Fitri...</h3>
+        <p>
+          Tepat hari ini, 19 tahun telah kau lalui.<br>
+          Selamat bertambah usia wahai perempuan hebat!<br><br>
+
+          Aku menuliskan ini karena tak cukup besar nyaliku untuk menghubungi dan mengucapkannya langsung kepadamu. Namun itu tak penting. Baiklah, kita kembali pada topik intinya. Selayaknya sebuah surat, perihal merupakan pokok pembicaraannya, maka izinkan aku menyampaikan doa dan harapan baik tepat pada sembilan belas tahun usiamu.<br><br>
+
+          Semoga sembilan belas merangkulmu dengan ramah.<br><br>
+
+          Semoga sembilan belas melimpahkan berkah.<br><br>
+
+          Semoga sembilan belas memberi kesehatan paripurna sepanjang harinya.<br><br>
+
+          Semoga sembilan belas membuka pintu peluang, rezeki dan kesempatan yang baik.<br><br>
+
+          Semoga sembilan belas membawamu pada keberhasilan dan kesuksesan.<br><br>
+
+          Semoga sembilan belas dikelilingi hal baik, lingkungan baik, serta teman baik yang selalu bisa mengerti dan memahamimu ketika langitmu cerah melainkan juga sedia menemanimu ketika mendung melanda.<br><br>
+
+          Semoga sembilan belas tetap memberimu tempat pulang baik dalam bentuk rumah maupun sosok yang hangat nan menenangkan, dengannya dapat menjadikan dirimu seutuhnya tanpa perlu berpura-pura.<br><br>
+
+          Semoga sembilan belas dapat menjadikanmu seorang yang lembut nan lapang hatinya, menenangkan tutur katanya, meneduhkan pandangnya, serta teguh nan kuat jiwanya.<br><br>
+
+          Semoga sembilan belas membentukmu menjadi perempuan hebat, dengan ilmunya, karakternya, kesederhanaannya, kedewasaan emosionalnya dengannya dapat membawa manfaat seluas-luasnya.<br><br>
+
+          Semoga sembilan belas dapat membuatmu mudah tersenyum dan bahagia penuh syukur atas hal-hal sederhana, menghabiskan seporsi makanan pedas favoritmu, mencoba iced coffee varian baru yang cocok dengan seleramu, ayah-ibu-kakak-adik sehat, rezeki yang datangnya tak disangka-sangka dalam bentuk apapun, hingga tak lupa bahwa apa yang dijalani saat ini merupakan perwujudan doa yang dulu pernah dilangitkan.<br><br>
+
+          <em>"Mudahlah untuk tersenyum, agar binar cantik dirimu semakin sempurna."</em><br><br>
+
+          Bahagialah, teruslah menjadi happy, meskipun hari-hari ini banyak hal membuat kepala terasa pusing nan berat, setidaknya jalani sembari berusaha menikmatinya. Tugas kuliah, deadline project, hingga laporan yang mulai menumpuk, semoga dimudahkan prosesnya dan diberi hasil memuaskan. Semangat Sayanggg!
+        </p>
+        <p class="sign">— From ur BF </p>
+      </div>
+
+      <div class="polaroid moment-photo">
+        <img src="Happy birthday.jpeg" alt="Foto Moment">
+        <span class="caption">Happy Birthday!</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="playlist-section" class="page">
+    <button class="back-btn" onclick="backToMenu()">&larr; Back</button>
+
+    <h1>Our Playlist</h1>
+    <p class="subtitle">A song that always reminds me of you</p>
+
+    <div class="scrapbook">
+      <div class="polaroid scrap-photo one">
+        <img src="play1.jpeg" alt="Scrapbook 1">
+        <span class="caption">My</span>
+      </div>
+
+      <div class="video-frame" style="padding: 10px; display: flex; align-items: center;">
+        <iframe
+          data-testid="embed-iframe"
+          style="border-radius:12px; border:none;"
+          src="https://open.spotify.com/embed/track/2v0vKdardqBzAPhObJyAvd?utm_source=generator&si=e9e72efbeed54839"
+          width="100%"
+          height="152"
+          frameBorder="0"
+          allowfullscreen=""
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy">
+        </iframe>
+      </div>
+
+      <div class="polaroid scrap-photo two">
+        <img src="play2.jpeg" alt="Scrapbook 2">
+        <span class="caption">Panasea</span>
+      </div>
+    </div>
+
+    <p class="song-title">♪ rumahsakit – Panasea ♪</p>
+  </div>
+
+  <div id="bouquet-section" class="page">
+    <button class="back-btn" onclick="backToMenu()">&larr; Back</button>
+
+    <h1>A Digital Bouquet</h1>
+    <p class="subtitle">Drag each flower into the bucket to reveal a little message just for you</p>
+
+    <div class="tray" id="tray">
+      <div class="flower-slot">
+        <img class="drag-flower" data-index="0" src="bunga-1.png" alt="Mawar" draggable="false">
+      </div>
+      <div class="flower-slot">
+        <img class="drag-flower" data-index="1" src="bunga-2.png" alt="Bunga Matahari" draggable="false">
+      </div>
+      <div class="flower-slot">
+        <img class="drag-flower" data-index="2" src="bunga-3.png" alt="Sakura" draggable="false">
+      </div>
+      <div class="flower-slot">
+        <img class="drag-flower" data-index="3" src="bunga-4.png" alt="Tulip" draggable="false">
+      </div>
+    </div>
+
+    <div class="bouquet-stage" id="bouquet">
+      <img class="bucket-img" id="bucket-img" src="bucket.png" alt="Bucket" draggable="false">
+    </div>
+
+    <div class="message-box" id="message-box">Drag a flower into the bucket...</div>
+  </div>
+
+<script>
+  const sections = document.querySelectorAll('.page');
+  const messageBox = document.getElementById('message-box');
+  const defaultMessage = "Drag a flower into the bucket...";
+
+  const messages = [
+    "You are the finest rose that ever bloomed — full of love and unmatched beauty. 🌹",
+    "Like a sunflower, you always turn toward the light and share your warmth. 🌻",
+    "You are as beautiful as cherry blossoms — lovely and bringing joy wherever you go. 🌸",
+    "Your presence alone is enough to make any room feel warmer. 🌷"
+  ];
+
+  const finalMessage = "All Flowers for u, Babe. 💐";
+
+  const bgMusic = document.getElementById('bg-music');
+  const musicBtn = document.getElementById('music-btn');
+
+  function startMusic() {
+    const p = bgMusic.play();
+    if (p !== undefined) {
+      p.then(function () {
+        musicBtn.classList.add('playing');
+      }).catch(function () {
+        musicBtn.classList.remove('playing');
+      });
+    }
+    musicBtn.classList.add('show');
+  }
+
+  function toggleMusic() {
+    if (bgMusic.paused) {
+      bgMusic.play();
+      musicBtn.classList.add('playing');
+    } else {
+      bgMusic.pause();
+      musicBtn.classList.remove('playing');
+    }
+  }
+
+  function showSection(id) {
+    sections.forEach(function (section) {
+      section.classList.remove('active');
+    });
+    document.getElementById(id).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (id === 'bouquet-section') updateMouth();
+  }
+
+  function backToMenu() {
+    showSection('main-menu');
+    resetBouquet();
+  }
+
+  function openEnvelope() {
+    const env = document.getElementById('envelope');
+    if (env.classList.contains('open')) return;
+    env.classList.add('open');
+    startMusic();
+    setTimeout(function () {
+      showSection('surprise-section');
+    }, 1100);
+  }
+
+  const bouquet = document.getElementById('bouquet');
+  const bucketImg = document.getElementById('bucket-img');
+  const flowers = document.querySelectorAll('.drag-flower');
+
+  const MOUTH_RATIO = 0.85;
+
+  function updateMouth() {
+    const bh = bucketImg.offsetHeight;
+    if (bh > 0) {
+      bouquet.style.setProperty('--mouth', (bh * MOUTH_RATIO) + 'px');
+    }
+  }
+
+  bucketImg.addEventListener('load', updateMouth);
+  window.addEventListener('resize', updateMouth);
+
+  const slots = [
+    { dx: '-17%', dy: '0%', rot: '-22deg', w: '34%' },
+    { dx: '-6%',  dy: '6%', rot: '-8deg',  w: '36%' },
+    { dx: '6%',   dy: '6%', rot: '8deg',   w: '36%' },
+    { dx: '17%',  dy: '0%', rot: '22deg',  w: '34%' }
+  ];
+  let placedCount = 0;
+
+  function isOverBouquet(e) {
+    const r = bouquet.getBoundingClientRect();
+    const m = 12;
+    return e.clientX >= r.left - m && e.clientX <= r.right + m &&
+           e.clientY >= r.top - m  && e.clientY <= r.bottom + m;
+  }
+
+  function showMessageText(text) {
+    messageBox.innerText = text;
+    messageBox.classList.remove('flash');
+    void messageBox.offsetWidth;
+    messageBox.classList.add('flash');
+  }
+
+  function placeFlower(el) {
+    if (el.classList.contains('placed')) return;
+
+    updateMouth();
+
+    const index = parseInt(el.dataset.index, 10);
+    const slot = slots[placedCount];
+    placedCount++;
+
+    const img = document.createElement('img');
+    img.src = el.src;
+    img.alt = '';
+    img.draggable = false;
+    img.className = 'placed-flower';
+    img.style.setProperty('--dx', slot.dx);
+    img.style.setProperty('--dy', slot.dy);
+    img.style.setProperty('--rot', slot.rot);
+    img.style.width = slot.w;
+    bouquet.appendChild(img);
+
+    el.style.transform = '';
+    el.classList.add('placed');
+
+    if (placedCount === flowers.length) {
+      showMessageText(messages[index] + "\n\n" + finalMessage);
+    } else {
+      showMessageText(messages[index]);
+    }
+  }
+
+  function resetBouquet() {
+    bouquet.querySelectorAll('.placed-flower').forEach(function (img) {
+      img.remove();
+    });
+    placedCount = 0;
+    flowers.forEach(function (el) {
+      el.classList.remove('placed', 'dragging');
+      el.style.transform = '';
+    });
+    bouquet.classList.remove('hover');
+    messageBox.innerText = defaultMessage;
+  }
+
+  flowers.forEach(function (el) {
+    let startX = 0, startY = 0, moved = false, active = false;
+
+    el.addEventListener('pointerdown', function (e) {
+      if (el.classList.contains('placed')) return;
+      active = true;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('dragging');
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', function (e) {
+      if (!active) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+      el.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.2)';
+      bouquet.classList.toggle('hover', isOverBouquet(e));
+    });
+
+    function endDrag(e, cancelled) {
+      if (!active) return;
+      active = false;
+      el.classList.remove('dragging');
+      bouquet.classList.remove('hover');
+      if (!cancelled && (!moved || isOverBouquet(e))) {
+        placeFlower(el);
+      } else {
+        el.style.transform = '';
+      }
+    }
+
+    el.addEventListener('pointerup', function (e) { endDrag(e, false); });
+    el.addEventListener('pointercancel', function (e) { endDrag(e, true); });
+  });
+</script>
+</body>
+</html>
